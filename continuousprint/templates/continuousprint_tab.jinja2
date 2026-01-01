@@ -256,7 +256,7 @@
                                   <option data-bind="value: $data, text: $data"></option>
                                 <!-- /ko -->
                               </select>
-                              <select data-bind="visible: set.getSelectedMaterialType($index()), value: (set.materials()[$index()] || {}).key, event: {change: (_, evt) => set.set_material($index(), evt.target.value)}">
+                              <select data-bind="value: (set.materials()[$index()] || {}).key, event: {change: (_, evt) => set.set_material($index(), evt.target.value)}">
                                 <option value="">Any</option>
                                 <!-- ko foreach: set.getColorsForExtruder($index()) -->
                                   <option data-bind="value: value, text: colorName, style: {'background-color': color}"></option>

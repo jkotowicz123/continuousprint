@@ -63,7 +63,7 @@ function CPSet(data, job, api, profile, materialsObservable) {
     let type = self.getSelectedMaterialType(idx);
     if (!type || !self.materialsObservable) return [];
     let allMaterials = self.materialsObservable();
-    return allMaterials.filter(m => m.material === type);
+    return allMaterials.filter(m => m.material === type).sort((a, b) => a.colorName.localeCompare(b.colorName));
   };
   self.metadata = (data.metadata) ? JSON.parse(data.metadata) : null;
   self.profile_matches = ko.computed(function() {
@@ -128,11 +128,7 @@ function CPSet(data, job, api, profile, materialsObservable) {
     return (luma >= 128) ? "#000000" : "#FFFFFF";
   }
   self._materialShortName = function(m) {
-    m = m.trim().toUpperCase();
-    if (m === "PETG") {
-      return "G";
-    }
-    return m[0];
+    return m.trim().toUpperCase();
   }
   self.materials = ko.computed(function() {
     let result = [];
