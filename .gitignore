@@ -9,3 +9,4 @@ dist
 *.zip
 site/
 volume/
+node_modules/
