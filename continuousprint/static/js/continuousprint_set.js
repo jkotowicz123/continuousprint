@@ -63,7 +63,7 @@ function CPSet(data, job, api, profile, materialsObservable) {
     let type = self.getSelectedMaterialType(idx);
     if (!type || !self.materialsObservable) return [];
     let allMaterials = self.materialsObservable();
-    return allMaterials.filter(m => m.material === type).sort((a, b) => a.colorName.localeCompare(b.colorName));
+    return allMaterials.filter(m => m.material === type).sort((a, b) => (a.colorName || '').localeCompare(b.colorName || ''));
   };
   self.metadata = (data.metadata) ? JSON.parse(data.metadata) : null;
   self.profile_matches = ko.computed(function() {

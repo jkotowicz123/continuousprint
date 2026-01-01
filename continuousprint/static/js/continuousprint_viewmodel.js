@@ -354,12 +354,13 @@ function CPViewModel(parameters) {
       let result = {};
       let nbad = 0;
       for (let spool of resp.allSpools) {
-        if (spool.material === null) {
+        if (spool.material === null || spool.colorName === null || spool.color === null) {
           nbad++;
           continue;
         }
-        let k = `${spool.material}_${spool.colorName}_#${spool.color.substring(1)}`;
-        result[k] = {value: k, text: `${spool.material} (${spool.colorName})`, material: spool.material, colorName: spool.colorName, color: `#${spool.color.substring(1)}`, density: spool.density || 1.24, diameter: spool.diameter || 1.75};
+        let colorHex = spool.color.startsWith('#') ? spool.color : `#${spool.color}`;
+        let k = `${spool.material}_${spool.colorName}_${colorHex}`;
+        result[k] = {value: k, text: `${spool.material} (${spool.colorName})`, material: spool.material, colorName: spool.colorName, color: colorHex, density: spool.density || 1.24, diameter: spool.diameter || 1.75};
       }
       self.materials(Object.values(result));
       self.badMaterialCount(nbad);
