@@ -27,6 +27,31 @@ class SpoolManagerIntegration:
             )
             return []
 
+    def get_spools_info(self):
+        """Get full spool information including name, remaining weight, and storage location."""
+        try:
+            spools = self._impl.api_getSelectedSpoolInformations()
+            result = []
+            for s in spools:
+                if s is not None:
+                    result.append(dict(
+                        databaseId=s.get('databaseId'),
+                        spoolName=s.get('displayName') or s.get('spoolName', ''),
+                        material=s.get('material', ''),
+                        colorName=s.get('colorName', ''),
+                        color=s.get('color', ''),
+                        remainingWeight=s.get('remainingWeight'),
+                        storageLocation=s.get('storageLocation', ''),
+                    ))
+                else:
+                    result.append(None)
+            return result
+        except Exception as e:
+            self._logger.warning(
+                f"Skipping spool info due to SpoolManager error: {e}"
+            )
+            return []
+
     def allowed_to_print(self):
         with app.app_context():
             r = self._impl.allowed_to_print()

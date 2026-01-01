@@ -39,6 +39,7 @@ class ScriptRunner:
             current=dict(),
             external=dict(),
             metadata=dict(),
+            spools=[],
         )
 
     def _get_user(self):
@@ -97,6 +98,16 @@ class ScriptRunner:
             self._symbols["metadata"] = self._file_manager.get_metadata(
                 FileDestinations.LOCAL, path
             )
+
+        # Update spools info from SpoolManager
+        if self._spool_manager is not None:
+            try:
+                self._symbols["spools"] = self._spool_manager.get_spools_info()
+            except Exception as e:
+                self._logger.warning(f"Could not get spools info: {e}")
+                self._symbols["spools"] = []
+        else:
+            self._symbols["spools"] = []
 
     def set_external_symbols(self, symbols):
         assert type(symbols) is dict

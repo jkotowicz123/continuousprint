@@ -125,12 +125,20 @@ class Driver:
             if bed_temp is not None:
                 self._bed_temp = bed_temp
             self._timelapse_start_ts = timelapse_start_ts
+            
+            # Get next item info for scripts (e.g. to display required material on LCD)
+            next_item = self.q.get_set_or_acquire()
+            next_path = next_item.path if next_item is not None else None
+            next_materials = next_item.materials() if next_item is not None else []
+            
             self._runner.set_current_symbols(
                 dict(
                     path=self._cur_path,
                     materials=self._cur_materials,
                     bed_temp=self._bed_temp,
                     state=self.state.__name__.strip("_state_"),
+                    next_path=next_path,
+                    next_materials=next_materials,
                 )
             )
 

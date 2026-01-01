@@ -25,8 +25,21 @@ SIMULATOR_DEFAULT_SYMTABLE = {
         "bed_temp": 23.59,
         "state": "printing",
         "action": "TICK",
+        "next_path": "nextprint.gcode",
+        "next_materials": ["PETG_blue_#0000ff"],
     },
     "external": {},
+    "spools": [
+        {
+            "databaseId": 42,
+            "spoolName": "Easy PETG Red",
+            "material": "PETG",
+            "colorName": "red",
+            "color": "#ff0000",
+            "remainingWeight": 850,
+            "storageLocation": "D26",
+        }
+    ],
     "metadata": {
         "hash": "123abc",
         "analysis": {

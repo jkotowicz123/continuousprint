@@ -173,8 +173,21 @@ current: {
     'bed_temp': 23.59,
     'state': '_state_printing',
     'action': 'SUCCESS',
+    'next_path': 'nextprint.gcode',
+    'next_materials': ['PETG_blue_#0000ff'],
 }
 external: {<user provided>}
+spools: [
+    {
+        'databaseId': 42,
+        'spoolName': 'Blue PETG Roll 1',
+        'material': 'PETG',
+        'colorName': 'blue',
+        'color': '#0000ff',
+        'remainingWeight': 850.5,
+        'storageLocation': 'Shelf A3',
+    }
+]
 metadata: {
     'hash': '38eea2d4463053bd79af52c3fadc37deaa7bfff7',
     'analysis': {
