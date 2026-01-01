@@ -359,7 +359,7 @@ function CPViewModel(parameters) {
           continue;
         }
         let k = `${spool.material}_${spool.colorName}_#${spool.color.substring(1)}`;
-        result[k] = {value: k, text: `${spool.material} (${spool.colorName})`, density: spool.density || 1.24, diameter: spool.diameter || 1.75};
+        result[k] = {value: k, text: `${spool.material} (${spool.colorName})`, material: spool.material, colorName: spool.colorName, color: `#${spool.color.substring(1)}`, density: spool.density || 1.24, diameter: spool.diameter || 1.75};
       }
       self.materials(Object.values(result));
       self.badMaterialCount(nbad);
@@ -370,6 +370,19 @@ function CPViewModel(parameters) {
       }
       self.hasSpoolManager(statusCode !== 404);
     });
+
+    self.materialTypes = ko.computed(function() {
+      let types = new Set();
+      for (let m of self.materials()) {
+        types.add(m.material);
+      }
+      return Array.from(types).sort();
+    });
+
+    self.getColorsForMaterial = function(materialType) {
+      if (!materialType) return [];
+      return self.materials().filter(m => m.material === materialType);
+    };
 
     self.humanize = function(num) {
       // Humanizes numbers by condensing and adding units

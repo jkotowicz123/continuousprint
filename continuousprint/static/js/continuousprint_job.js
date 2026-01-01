@@ -26,6 +26,7 @@ function CPJob(obj, peers, api, profile, materials, stats_dimensions=CP_STATS_DI
     throw Error("API must be provided when creating CPJob");
   }
   var self = this;
+  self.materials = materials;
 
   obj = {...{sets: [], name: "", draft: false, count: 1, id: -1}, ...obj};
   if (obj.remaining === undefined) {
@@ -55,7 +56,7 @@ function CPJob(obj, peers, api, profile, materials, stats_dimensions=CP_STATS_DI
 
   self.sets = ko.observableArray([]);
   for (let s of obj.sets) {
-    self.sets.push(new CPSet(s, self, api, profile));
+    self.sets.push(new CPSet(s, self, api, profile, materials));
   }
 
   self._update = function(result) {
@@ -68,7 +69,7 @@ function CPJob(obj, peers, api, profile, materials, stats_dimensions=CP_STATS_DI
     let cpss = [];
     if (result.sets !== undefined) {
       for (let qsd of result.sets) {
-        cpss.push(new CPSet(qsd, self, api, profile));
+        cpss.push(new CPSet(qsd, self, api, profile, materials));
       }
     }
     self.sets(cpss);
@@ -94,7 +95,7 @@ function CPJob(obj, peers, api, profile, materials, stats_dimensions=CP_STATS_DI
     });
   }
   self.onSetModified = function(s) {
-    let newqs = new CPSet(s, self, api, profile);
+    let newqs = new CPSet(s, self, api, profile, materials);
     for (let qs of self.sets()) {
       if (qs.id === s.id) {
         return self.sets.replace(qs, newqs);

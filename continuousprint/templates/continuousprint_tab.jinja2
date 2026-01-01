@@ -248,12 +248,18 @@
                         <div data-bind="visible: job.draft() && $root.materials().length > 0">
                           <h4>Materials</h4>
                           <div data-bind="foreach: new Array($root.extruders() || 0)">
-                            <div>
+                            <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 4px;">
                               <span data-bind="text: '' + $index() + ':'"></span>
-                              <select data-bind="value: (set.materials()[$index()] || {}).key, event: {change: (_, evt) => set.set_material($index(), evt.target.value)}">
-                                <option key="">Any</option>
-                                <!-- ko foreach: $root.materials -->
-                                  <option data-bind="value: value, text: text"></option>
+                              <select data-bind="value: set.getSelectedMaterialType($index()), event: {change: (_, evt) => set.setMaterialType($index(), evt.target.value)}">
+                                <option value="">Select material...</option>
+                                <!-- ko foreach: $root.materialTypes -->
+                                  <option data-bind="value: $data, text: $data"></option>
+                                <!-- /ko -->
+                              </select>
+                              <select data-bind="visible: set.getSelectedMaterialType($index()), value: (set.materials()[$index()] || {}).key, event: {change: (_, evt) => set.set_material($index(), evt.target.value)}">
+                                <option value="">Any</option>
+                                <!-- ko foreach: set.getColorsForExtruder($index()) -->
+                                  <option data-bind="value: value, text: colorName, style: {'background-color': color}"></option>
                                 <!-- /ko -->
                               </select>
                             </div>

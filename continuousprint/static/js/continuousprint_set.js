@@ -11,9 +11,10 @@ if (typeof ko === "undefined" || ko === null) {
 
 // Sets are a sequence of the same queue item repated a number of times.
 // This is an abstraction on top of the actual queue maintained by the server.
-function CPSet(data, job, api, profile) {
+function CPSet(data, job, api, profile, materialsObservable) {
   var self = this;
   self.id = (data.id !== undefined) ? data.id : -1;
+  self.materialsObservable = materialsObservable;
 
   self.sd = ko.observable(data.sd);
   self.path = ko.observable(data.path);
@@ -27,6 +28,43 @@ function CPSet(data, job, api, profile) {
   self.expanded = ko.observable(data.expanded);
   self.mats = ko.observable(data.materials || []);
   self.profiles = ko.observableArray(data.profiles || []);
+
+  self.selectedMaterialTypes = ko.observableArray([]);
+  self._initMaterialTypes = function() {
+    let mats = self.mats();
+    let types = [];
+    for (let i = 0; i < mats.length; i++) {
+      if (mats[i]) {
+        let split = mats[i].split("_");
+        types[i] = split[0] || '';
+      } else {
+        types[i] = '';
+      }
+    }
+    self.selectedMaterialTypes(types);
+  };
+  self._initMaterialTypes();
+
+  self.getSelectedMaterialType = function(idx) {
+    return self.selectedMaterialTypes()[idx] || '';
+  };
+
+  self.setMaterialType = function(idx, type) {
+    let types = self.selectedMaterialTypes().slice();
+    while (idx >= types.length) {
+      types.push('');
+    }
+    types[idx] = type;
+    self.selectedMaterialTypes(types);
+    self.set_material(idx, '');
+  };
+
+  self.getColorsForExtruder = function(idx) {
+    let type = self.getSelectedMaterialType(idx);
+    if (!type || !self.materialsObservable) return [];
+    let allMaterials = self.materialsObservable();
+    return allMaterials.filter(m => m.material === type);
+  };
   self.metadata = (data.metadata) ? JSON.parse(data.metadata) : null;
   self.profile_matches = ko.computed(function() {
     let profs = self.profiles();
