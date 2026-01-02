@@ -117,7 +117,7 @@ def get_footer(path: str):
     with open(path, "rb") as f:
         try:  # catch OSError in case of a one line file
             f.seek(-JUMP, os.SEEK_END)
-            while not gcode_multiline_re.match(f.read(JUMP).decode("utf8")):
+            while not gcode_multiline_re.search(f.read(JUMP).decode("utf8")):
                 f.seek(-2 * JUMP, os.SEEK_CUR)
             f.seek(-JUMP, os.SEEK_END)
             for line in f:
