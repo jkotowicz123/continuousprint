@@ -127,6 +127,10 @@ class ScriptRunner:
             self._logger.warning(e)
             return self._start_slicing(item, cb)
 
+        # Inject metadata from LAN job manifest into OctoPrint's file_manager
+        # so SpoolManager can read filament requirements
+        self._inject_metadata_for_spool_manager(item, path)
+
         try:
             self._logger.info(f"Selecting {path} (sd={item.sd})")
             self._printer.select_file(
@@ -142,12 +146,77 @@ class ScriptRunner:
             self._msg("File not gcode: " + path, type="error")
             return False
 
+    def _inject_metadata_for_spool_manager(self, item, resolved_path):
+        """Inject metadata from LAN job manifest into OctoPrint's file_manager.
+        
+        This allows SpoolManager to read filament requirements for files
+        fetched from LAN peers, which don't have local OctoPrint analysis.
+        
+        CPQ stores metadata as: {estimatedPrintTime, filamentLengths: [length0, length1, ...]}
+        SpoolManager expects: {filament: {tool0: {length: X}, tool1: {length: Y}, ...}}
+        """
+        import json
+        
+        # Only process if item has metadata (from .gjob manifest)
+        if not hasattr(item, 'metadata') or item.metadata is None:
+            return
+        
+        try:
+            # Parse metadata if it's a JSON string
+            metadata = item.metadata
+            if isinstance(metadata, str):
+                metadata = json.loads(metadata)
+            
+            if not metadata:
+                return
+            
+            # Convert CPQ format to SpoolManager format
+            filament_lengths = metadata.get('filamentLengths', [])
+            if not filament_lengths:
+                return
+            
+            # Build SpoolManager-compatible analysis structure
+            filament_dict = {}
+            for i, length in enumerate(filament_lengths):
+                if length is not None and length > 0:
+                    filament_dict[f"tool{i}"] = {"length": length}
+            
+            if not filament_dict:
+                return
+            
+            analysis = {
+                "filament": filament_dict,
+                "estimatedPrintTime": metadata.get('estimatedPrintTime'),
+            }
+            
+            try:
+                # Try to set metadata using the resolved path
+                self._file_manager.set_additional_metadata(
+                    FileDestinations.LOCAL,
+                    resolved_path,
+                    "analysis",
+                    analysis,
+                    overwrite=True,
+                )
+                self._logger.info(f"Injected filament metadata for LAN file: {resolved_path} - {filament_dict}")
+            except Exception as e:
+                self._logger.debug(f"Could not inject metadata for {resolved_path}: {e}")
+                
+        except json.JSONDecodeError as e:
+            self._logger.debug(f"Could not parse item metadata as JSON: {e}")
+        except Exception as e:
+            self._logger.debug(f"Error injecting metadata for SpoolManager: {e}")
+
     def verify_active(self):
         # SpoolManager does its filament estimation based on the current active
         # gcode file (the "job" in OctoPrint parlance).
         # Failing this verification should put the queue in a "needs action" state and prevent printing the next file.
         if self._spool_manager is not None:
-            ap = self._spool_manager.allowed_to_print()
+            try:
+                ap = self._spool_manager.allowed_to_print()
+            except Exception as e:
+                self._logger.warning(f"SpoolManager.allowed_to_print() raised exception: {e}")
+                return True, None  # Skip validation if SpoolManager fails
             ap = dict(
                 misconfig=ap.get("metaOrAttributesMissing", False),
                 nospool=ap.get("result", {}).get("noSpoolSelected", []),
