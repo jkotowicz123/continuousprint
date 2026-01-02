@@ -10,6 +10,7 @@ if (typeof CPJob === "undefined" || CPJob === null) {
   ko = require('knockout');
   CPJob = require('./continuousprint_job');
   CPStats = require('./continuousprint_stats');
+  CPCalendar = require('./continuousprint_calendar').CPCalendar;
   CP_STATS_DIMENSIONS={
     completed: null,
     count: null,
@@ -28,6 +29,7 @@ function CPQueue(data, api, files, profile, materials, stats_dimensions=CP_STATS
     self.name = data.name;
     self.strategy = data.strategy;
     self.addr = data.addr;
+    self.peers = data.peers || {};
     self.jobs = ko.observableArray([]);
     self._pushJob = function(jdata) {
       self.jobs.push(new CPJob(jdata, data.peers, self.api, profile, materials, stats_dimensions));
@@ -40,6 +42,16 @@ function CPQueue(data, api, files, profile, materials, stats_dimensions=CP_STATS
     self.fullDetails = ko.observable("");
     self.showStats = ko.observable(true);
     self.ready = ko.observable(data.name === 'local' || Object.keys(data.peers).length > 0);
+    
+    self.calendar = null;
+    if (self.addr !== null && typeof CPCalendar !== "undefined") {
+      self.calendar = new CPCalendar(self);
+      self.jobs.subscribe(function() {
+        if (self.calendar && self.calendar.visible()) {
+          self.calendar.refresh();
+        }
+      });
+    }
     if (self.addr !== null && data.peers !== undefined) {
       let pkeys = Object.keys(data.peers);
       if (pkeys.length === 0) {

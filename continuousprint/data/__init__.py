@@ -193,6 +193,7 @@ ASSETS = dict(
         "js/continuousprint_set.js",
         "js/continuousprint_stats.js",
         "js/continuousprint_job.js",
+        "js/continuousprint_calendar.js",
         "js/continuousprint_queue.js",
         "js/continuousprint_viewmodel.js",
         "js/continuousprint_settings_event.js",

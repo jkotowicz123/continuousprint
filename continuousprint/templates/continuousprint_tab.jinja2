@@ -92,7 +92,88 @@
   </div>
 
   <div id="continuousprint_tab_queues" class="tab-pane active" data-bind="foreach: {data: queues, as: 'queue'}">
-    <div class="cp-queue" data-bind="css: {'loading': $root.loading() || !ready()}">
+    <!-- Calendar View for LAN Queues -->
+    <!-- ko if: addr !== null && calendar -->
+    <div class="calendar-toggle" data-bind="click: calendar.toggle">
+      <i class="fas" data-bind="css: calendar.visible() ? 'fa-list' : 'fa-calendar-alt'"></i>
+      <span data-bind="text: calendar.visible() ? 'Switch to List View' : 'Switch to Calendar View'"></span>
+    </div>
+    
+    <div class="calendar-container" data-bind="visible: calendar.visible">
+      <div class="calendar-toolbar">
+        <div class="btn-group">
+          <button class="btn btn-small" data-bind="click: calendar.zoomOut" title="Zoom Out">
+            <i class="fas fa-search-minus"></i>
+          </button>
+          <button class="btn btn-small" data-bind="click: calendar.zoomIn" title="Zoom In">
+            <i class="fas fa-search-plus"></i>
+          </button>
+          <button class="btn btn-small" data-bind="click: calendar.scrollToNow" title="Jump to Now">
+            <i class="fas fa-clock"></i> Now
+          </button>
+        </div>
+        <div>
+          <span class="hint">Showing next <span data-bind="text: calendar.timelineHours"></span> hours</span>
+        </div>
+      </div>
+      
+      <div class="calendar-header">
+        <div class="calendar-lane-label-header">Printer</div>
+        <div class="calendar-timeline-header calendar-timeline-scroll">
+          <div class="calendar-time-markers" data-bind="style: {width: calendar.timelineWidth() + 'px'}">
+            <!-- ko foreach: calendar.timeMarkers -->
+            <div class="calendar-time-marker" data-bind="style: {left: position + 'px'}, text: label"></div>
+            <!-- /ko -->
+          </div>
+        </div>
+      </div>
+      
+      <div class="calendar-body">
+        <!-- ko if: calendar.lanes().length === 0 -->
+        <div class="calendar-empty">No printers connected to this LAN queue</div>
+        <!-- /ko -->
+        <!-- ko foreach: calendar.lanes -->
+        <div class="calendar-lane">
+          <div class="calendar-lane-label">
+            <div class="calendar-lane-name" data-bind="text: displayName, attr: {title: address}"></div>
+            <div class="calendar-lane-status" data-bind="text: status, css: statusClass"></div>
+          </div>
+          <div class="calendar-lane-events calendar-timeline-scroll" data-bind="style: {width: $parent.calendar.timelineWidth() + 'px'}">
+            <div class="calendar-current-time" data-bind="style: {left: $parent.calendar.currentTimePosition() + 'px'}"></div>
+            <!-- ko foreach: events -->
+            <div class="calendar-event" data-bind="style: $parents[1].calendar.getEventStyle($data), css: {active: isActive}, attr: {title: title() + ' - ' + setName()}">
+              <div class="calendar-event-title" data-bind="text: title"></div>
+              <div class="calendar-event-set" data-bind="text: setName"></div>
+              <div class="calendar-event-duration" data-bind="text: $parents[1].calendar.formatDuration(duration)"></div>
+              <div class="calendar-event-progress" data-bind="style: {width: progress() + '%'}"></div>
+            </div>
+            <!-- /ko -->
+            <!-- ko if: events().length === 0 -->
+            <div class="calendar-empty" style="position: absolute; left: 10px; top: 50%; transform: translateY(-50%);">No jobs scheduled</div>
+            <!-- /ko -->
+          </div>
+        </div>
+        <!-- /ko -->
+      </div>
+      
+      <div class="calendar-legend">
+        <div class="calendar-legend-item">
+          <div class="calendar-legend-color queued"></div>
+          <span>Queued</span>
+        </div>
+        <div class="calendar-legend-item">
+          <div class="calendar-legend-color active"></div>
+          <span>Printing</span>
+        </div>
+        <div class="calendar-legend-item">
+          <div class="calendar-legend-color current-time"></div>
+          <span>Current Time</span>
+        </div>
+      </div>
+    </div>
+    <!-- /ko -->
+
+    <div class="cp-queue" data-bind="css: {'loading': $root.loading() || !ready()}, visible: !calendar || !calendar.visible()">
     <div class="cp-header action-bar">
         <div class="multiselect">
           <div class="dropdown">

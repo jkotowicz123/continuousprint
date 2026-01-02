@@ -509,3 +509,333 @@
   margin-left: 5px;
   margin-right: 5px;
 }
+
+/* ==== Calendar View Styles ==== */
+#tab_plugin_continuousprint .calendar-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px;
+  cursor: pointer;
+  border: 1px solid #e5e5e5;
+  border-radius: var(--cpq-pad);
+  margin-bottom: var(--cpq-pad);
+  background: #f9f9f9;
+  transition: background 0.2s;
+}
+#tab_plugin_continuousprint .calendar-toggle:hover {
+  background: #eee;
+}
+#tab_plugin_continuousprint .calendar-toggle i {
+  margin-right: 8px;
+}
+
+#tab_plugin_continuousprint .calendar-container {
+  border: 1px solid #e5e5e5;
+  border-radius: var(--cpq-pad);
+  margin-bottom: var(--cpq-pad2);
+  overflow: hidden;
+}
+
+#tab_plugin_continuousprint .calendar-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 12px;
+  background: #f5f5f5;
+  border-bottom: 1px solid #e5e5e5;
+}
+
+#tab_plugin_continuousprint .calendar-toolbar .btn-group {
+  display: flex;
+  gap: 4px;
+}
+
+#tab_plugin_continuousprint .calendar-toolbar .btn {
+  padding: 4px 8px;
+  font-size: 12px;
+}
+
+#tab_plugin_continuousprint .calendar-header {
+  display: flex;
+  border-bottom: 1px solid #e5e5e5;
+  background: #fafafa;
+}
+
+#tab_plugin_continuousprint .calendar-lane-label-header {
+  min-width: 150px;
+  max-width: 150px;
+  padding: 8px 12px;
+  font-weight: bold;
+  border-right: 1px solid #e5e5e5;
+  font-size: 12px;
+  color: #666;
+}
+
+#tab_plugin_continuousprint .calendar-timeline-header {
+  flex: 1;
+  position: relative;
+  height: 30px;
+  overflow: hidden;
+}
+
+#tab_plugin_continuousprint .calendar-timeline-scroll {
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+
+#tab_plugin_continuousprint .calendar-time-markers {
+  display: flex;
+  position: relative;
+  height: 100%;
+}
+
+#tab_plugin_continuousprint .calendar-time-marker {
+  position: absolute;
+  font-size: 10px;
+  color: #888;
+  transform: translateX(-50%);
+  top: 8px;
+  white-space: nowrap;
+}
+
+#tab_plugin_continuousprint .calendar-body {
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+#tab_plugin_continuousprint .calendar-lane {
+  display: flex;
+  border-bottom: 1px solid #eee;
+  min-height: 50px;
+}
+
+#tab_plugin_continuousprint .calendar-lane:last-child {
+  border-bottom: none;
+}
+
+#tab_plugin_continuousprint .calendar-lane-label {
+  min-width: 150px;
+  max-width: 150px;
+  padding: 8px 12px;
+  border-right: 1px solid #e5e5e5;
+  background: #fafafa;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+#tab_plugin_continuousprint .calendar-lane-name {
+  font-weight: bold;
+  font-size: 12px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+#tab_plugin_continuousprint .calendar-lane-status {
+  font-size: 10px;
+  margin-top: 2px;
+}
+
+#tab_plugin_continuousprint .calendar-lane-status.printing {
+  color: #5cb85c;
+}
+
+#tab_plugin_continuousprint .calendar-lane-status.idle {
+  color: #888;
+}
+
+#tab_plugin_continuousprint .calendar-lane-status.error {
+  color: #d9534f;
+}
+
+#tab_plugin_continuousprint .calendar-lane-status.offline {
+  color: #aaa;
+}
+
+#tab_plugin_continuousprint .calendar-lane-events {
+  flex: 1;
+  position: relative;
+  padding: 4px 0;
+  min-height: 42px;
+}
+
+#tab_plugin_continuousprint .calendar-event {
+  position: absolute;
+  top: 4px;
+  bottom: 4px;
+  background: linear-gradient(135deg, #5bc0de 0%, #46b8da 100%);
+  border-radius: 4px;
+  padding: 4px 8px;
+  overflow: hidden;
+  cursor: pointer;
+  transition: transform 0.1s, box-shadow 0.1s;
+  border: 1px solid rgba(0,0,0,0.1);
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+#tab_plugin_continuousprint .calendar-event:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+  z-index: 10;
+}
+
+#tab_plugin_continuousprint .calendar-event.active {
+  background: linear-gradient(135deg, #5cb85c 0%, #4cae4c 100%);
+  animation: calendar-pulse 2s infinite;
+}
+
+@keyframes calendar-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.85; }
+}
+
+#tab_plugin_continuousprint .calendar-event-title {
+  font-size: 11px;
+  font-weight: bold;
+  color: #fff;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-shadow: 0 1px 1px rgba(0,0,0,0.2);
+}
+
+#tab_plugin_continuousprint .calendar-event-set {
+  font-size: 10px;
+  color: rgba(255,255,255,0.9);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+#tab_plugin_continuousprint .calendar-event-duration {
+  font-size: 9px;
+  color: rgba(255,255,255,0.8);
+  position: absolute;
+  bottom: 2px;
+  right: 4px;
+}
+
+#tab_plugin_continuousprint .calendar-event-progress {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  height: 3px;
+  background: rgba(255,255,255,0.5);
+  border-radius: 0 0 0 4px;
+}
+
+#tab_plugin_continuousprint .calendar-current-time {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: #d9534f;
+  z-index: 100;
+  pointer-events: none;
+}
+
+#tab_plugin_continuousprint .calendar-current-time::before {
+  content: '';
+  position: absolute;
+  top: -4px;
+  left: -4px;
+  width: 10px;
+  height: 10px;
+  background: #d9534f;
+  border-radius: 50%;
+}
+
+#tab_plugin_continuousprint .calendar-empty {
+  padding: 20px;
+  text-align: center;
+  color: #888;
+  font-style: italic;
+}
+
+#tab_plugin_continuousprint .calendar-legend {
+  display: flex;
+  gap: 16px;
+  padding: 8px 12px;
+  background: #f5f5f5;
+  border-top: 1px solid #e5e5e5;
+  font-size: 11px;
+}
+
+#tab_plugin_continuousprint .calendar-legend-item {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+#tab_plugin_continuousprint .calendar-legend-color {
+  width: 12px;
+  height: 12px;
+  border-radius: 2px;
+}
+
+#tab_plugin_continuousprint .calendar-legend-color.queued {
+  background: linear-gradient(135deg, #5bc0de 0%, #46b8da 100%);
+}
+
+#tab_plugin_continuousprint .calendar-legend-color.active {
+  background: linear-gradient(135deg, #5cb85c 0%, #4cae4c 100%);
+}
+
+#tab_plugin_continuousprint .calendar-legend-color.current-time {
+  background: #d9534f;
+  width: 2px;
+  height: 12px;
+}
+
+/* Dark theme support */
+.themeify.discorded #tab_plugin_continuousprint .calendar-container,
+.themeify.cyborg #tab_plugin_continuousprint .calendar-container,
+.themeify.discoranged #tab_plugin_continuousprint .calendar-container,
+.themeify.nighttime #tab_plugin_continuousprint .calendar-container {
+  border-color: #444;
+  background: #2a2a2a;
+}
+
+.themeify.discorded #tab_plugin_continuousprint .calendar-toggle,
+.themeify.cyborg #tab_plugin_continuousprint .calendar-toggle,
+.themeify.discoranged #tab_plugin_continuousprint .calendar-toggle,
+.themeify.nighttime #tab_plugin_continuousprint .calendar-toggle {
+  background: #333;
+  border-color: #444;
+}
+
+.themeify.discorded #tab_plugin_continuousprint .calendar-toggle:hover,
+.themeify.cyborg #tab_plugin_continuousprint .calendar-toggle:hover,
+.themeify.discoranged #tab_plugin_continuousprint .calendar-toggle:hover,
+.themeify.nighttime #tab_plugin_continuousprint .calendar-toggle:hover {
+  background: #444;
+}
+
+.themeify.discorded #tab_plugin_continuousprint .calendar-toolbar,
+.themeify.cyborg #tab_plugin_continuousprint .calendar-toolbar,
+.themeify.discoranged #tab_plugin_continuousprint .calendar-toolbar,
+.themeify.nighttime #tab_plugin_continuousprint .calendar-toolbar,
+.themeify.discorded #tab_plugin_continuousprint .calendar-header,
+.themeify.cyborg #tab_plugin_continuousprint .calendar-header,
+.themeify.discoranged #tab_plugin_continuousprint .calendar-header,
+.themeify.nighttime #tab_plugin_continuousprint .calendar-header,
+.themeify.discorded #tab_plugin_continuousprint .calendar-lane-label,
+.themeify.cyborg #tab_plugin_continuousprint .calendar-lane-label,
+.themeify.discoranged #tab_plugin_continuousprint .calendar-lane-label,
+.themeify.nighttime #tab_plugin_continuousprint .calendar-lane-label,
+.themeify.discorded #tab_plugin_continuousprint .calendar-legend,
+.themeify.cyborg #tab_plugin_continuousprint .calendar-legend,
+.themeify.discoranged #tab_plugin_continuousprint .calendar-legend,
+.themeify.nighttime #tab_plugin_continuousprint .calendar-legend {
+  background: #333;
+  border-color: #444;
+}
+
+.themeify.discorded #tab_plugin_continuousprint .calendar-lane,
+.themeify.cyborg #tab_plugin_continuousprint .calendar-lane,
+.themeify.discoranged #tab_plugin_continuousprint .calendar-lane,
+.themeify.nighttime #tab_plugin_continuousprint .calendar-lane {
+  border-color: #444;
+}
