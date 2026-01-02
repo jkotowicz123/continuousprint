@@ -341,7 +341,7 @@ PrinterProfile:
       clearBed: Pause
       finished: Generic Off
     depth: 190
-    extra_tags: ["MK4 JobOx"]
+    extra_tags: ["MK4_JobOx"]
     formFactor: rectangular
     height: 220
     make: Prusa
