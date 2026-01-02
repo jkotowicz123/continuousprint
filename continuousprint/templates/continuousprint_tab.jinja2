@@ -197,6 +197,9 @@
                         <span class="materials" data-bind="visible: materials().length > 0, foreach: materials">
                         <span class="label" data-bind="attr: {title: title}, text: shortName, style: {'background-color': bgColor, 'color': color}"></span>
                           </span>
+                          <span class="profiles" data-bind="visible: profileTags().length > 0, foreach: profileTags">
+                            <span class="label label-info" data-bind="text: $data"></span>
+                          </span>
                           <span data-bind="text: shortName"/>
                         </p>
                         <div class="set_warning has_title" data-bind="hidden: profile_matches() || missing_file()" title="Set profile doesn't match this printer and will be skipped">
@@ -230,9 +233,9 @@
                           <div>
                             Profiles:
                             <span data-bind="visible: set.profiles().length === 0 && !job.draft()">any</span>
-                            <span data-bind="foreach: set.profiles">
+                            <span data-bind="foreach: set.profileTags">
                               <span class="label label-info">
-                                <i style="cursor: pointer", class="fas fa-times" data-bind="click: set.rmProfile, visible: job.draft"></i>
+                                <i style="cursor: pointer", class="fas fa-times" data-bind="click: function() { set.profiles.splice($index(), 1); }, visible: job.draft"></i>
                                 <span data-bind="text:$data"></span>
                               </span>
                             </span>

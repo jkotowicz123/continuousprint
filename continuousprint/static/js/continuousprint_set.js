@@ -28,6 +28,13 @@ function CPSet(data, job, api, profile, materialsObservable) {
   self.expanded = ko.observable(data.expanded);
   self.mats = ko.observable(data.materials || []);
   self.profiles = ko.observableArray(data.profiles || []);
+  self.profileTags = ko.computed(function() {
+    // Extract short tag from full profile name (e.g., "Prusa MK4" -> "MK4")
+    return self.profiles().map(function(p) {
+      let parts = p.split(' ');
+      return parts[parts.length - 1]; // Last word is typically the model tag
+    });
+  });
 
   self.selectedMaterialTypes = ko.observableArray([]);
   self._initMaterialTypes = function() {
