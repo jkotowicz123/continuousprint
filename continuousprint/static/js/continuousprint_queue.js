@@ -61,6 +61,10 @@ function CPQueue(data, api, files, profile, materials, stats_dimensions=CP_STATS
           actives.push(pd.active_set);
         }
       }
+      // Also include local active_set in case it's not yet synced to peers
+      if (data.active_set !== null && actives.indexOf(data.active_set) === -1) {
+        actives.push(data.active_set);
+      }
       self.active_sets = ko.observableArray(actives);
     } else {
       self.active_sets = ko.observableArray([data.active_set]);
