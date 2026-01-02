@@ -143,19 +143,37 @@ def get_footer(path: str):
     return ftr
 
 
-def get_profile(hdr: list, ftr: list):
+def get_profile_from_filename(path: str):
+    # Extract profile from filename using token matching
+    # e.g. "Shape-Box_MK4_2h38m.gcode" -> matches "MK4" tag -> "Prusa MK4"
+    filename = os.path.basename(path)
+    name_without_ext = os.path.splitext(filename)[0]
+    sys.stderr.write(f"Checking filename: {name_without_ext}\n")
+    return token_string_match(name_without_ext)
+
+
+def get_profile_from_gcode(hdr: list, ftr: list):
     for name, match, getprof in PROCESSORS:
         if match(hdr, ftr):
             sys.stderr.write(f"File matched with {name}\n")
             profstr = getprof(hdr, ftr)
             return token_string_match(profstr)
+    return None
 
 
 if __name__ == "__main__":
     sys.stderr.write("=== Continuous Print Profile Inference ===\n")
-    hdr = get_header(sys.argv[1])
-    ftr = get_footer(sys.argv[1])
-    prof = get_profile(hdr, ftr)
+    path = sys.argv[1]
+    
+    # Try filename first (most reliable for PrusaSlicer default naming)
+    prof = get_profile_from_filename(path)
+    
+    # Fall back to gcode content parsing
+    if prof is None:
+        hdr = get_header(path)
+        ftr = get_footer(path)
+        prof = get_profile_from_gcode(hdr, ftr)
+    
     if prof is not None:
         sys.stdout.write(prof)
     sys.stdout.flush()
