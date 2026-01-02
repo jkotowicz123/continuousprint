@@ -316,6 +316,42 @@ PrinterProfile:
   - defaults:
       clearBed: Pause
       finished: Generic Off
+    depth: 210
+    extra_tags: ["MK4"]
+    formFactor: rectangular
+    height: 220
+    make: Prusa
+    model: MK4
+    name: Prusa MK4
+    selfClearing: false
+    width: 250
+  - defaults:
+      clearBed: Pause
+      finished: Generic Off
+    depth: 210
+    extra_tags: ["MK4S"]
+    formFactor: rectangular
+    height: 220
+    make: Prusa
+    model: MK4S
+    name: Prusa MK4S
+    selfClearing: false
+    width: 250
+  - defaults:
+      clearBed: Pause
+      finished: Generic Off
+    depth: 190
+    extra_tags: ["MK4 JobOx"]
+    formFactor: rectangular
+    height: 220
+    make: Prusa
+    model: MK4 + JobOx
+    name: Prusa MK4 + JobOx
+    selfClearing: true
+    width: 250
+  - defaults:
+      clearBed: Pause
+      finished: Generic Off
     depth: 300
     extra_tags: []
     formFactor: rectangular
