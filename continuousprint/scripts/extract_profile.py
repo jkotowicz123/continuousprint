@@ -10,10 +10,16 @@ def _strip_nonalpha(s: str):
 
 
 PROFILES = list(PRINTER_PROFILES.keys())
+# Full candidates include profile name tokens + extra_tags (for gcode content matching)
 CANDIDATES = [
     set(_strip_nonalpha(k).split()).union(
         set(PRINTER_PROFILES[k].get("extra_tags", []))
     )
+    for k in PROFILES
+]
+# Extra tags only (for filename matching - more precise)
+EXTRA_TAGS_ONLY = [
+    set(PRINTER_PROFILES[k].get("extra_tags", []))
     for k in PROFILES
 ]
 
@@ -144,12 +150,29 @@ def get_footer(path: str):
 
 
 def get_profile_from_filename(path: str):
-    # Extract profile from filename using token matching
+    # Extract profile from filename using extra_tags only (more precise)
     # e.g. "Shape-Box_MK4_2h38m.gcode" -> matches "MK4" tag -> "Prusa MK4"
     filename = os.path.basename(path)
     name_without_ext = os.path.splitext(filename)[0]
     sys.stderr.write(f"Checking filename: {name_without_ext}\n")
-    return token_string_match(name_without_ext)
+    
+    # Use extra_tags only for filename matching to avoid false positives
+    p = set(_strip_nonalpha(name_without_ext).split())
+    scores = [len(p.intersection(c)) for c in EXTRA_TAGS_ONLY]
+    
+    sys.stderr.write(f"Scoring filename against extra_tags:\n")
+    desc = sorted(zip(PROFILES, scores), key=lambda x: x[1], reverse=True)
+    for prof, s in desc[:4]:
+        if s == 0:
+            continue
+        sys.stderr.write(f"- {prof}: {s}\n")
+    sys.stderr.write("- ...\n")
+    
+    max_score = max(scores) if scores else 0
+    if max_score < 1:
+        return None
+    max_index = scores.index(max_score)
+    return PROFILES[max_index]
 
 
 def get_profile_from_gcode(hdr: list, ftr: list):
