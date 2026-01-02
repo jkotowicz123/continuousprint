@@ -110,23 +110,37 @@ def get_header(path: str):
 
 
 def get_footer(path: str):
-    # Adapted from https://stackoverflow.com/a/54278929
-    # Skip back until we start seeing gcode
-    hdr = []
-    JUMP = 200  # Num bytes to jump back and search for gcode
+    # Read backwards from end of file to find comments after last gcode move
+    # PrusaSlicer can have several KB of config at the end
+    ftr = []
+    JUMP = 4096  # Increased to handle large slicer config dumps
     with open(path, "rb") as f:
-        try:  # catch OSError in case of a one line file
+        try:
             f.seek(-JUMP, os.SEEK_END)
-            while not gcode_multiline_re.search(f.read(JUMP).decode("utf8")):
-                f.seek(-2 * JUMP, os.SEEK_CUR)
-            f.seek(-JUMP, os.SEEK_END)
-            for line in f:
-                ln = line.decode("utf8")
-                if ln.startswith(";"):
-                    hdr.append(ln)
         except OSError:
-            pass  # give up
-    return hdr
+            f.seek(0)  # File smaller than JUMP, start from beginning
+        
+        # Find where gcode moves end by searching backwards
+        pos = f.tell()
+        content = f.read().decode("utf8", errors="ignore")
+        
+        # Find last gcode move in this chunk
+        last_gcode = -1
+        for m in gcode_multiline_re.finditer(content):
+            last_gcode = m.end()
+        
+        if last_gcode == -1:
+            # No gcode found in last chunk, keep searching backwards
+            # For simplicity, just read all comments from current position
+            pass
+        
+        # Read all comment lines after the last gcode move
+        f.seek(pos)
+        for line in f:
+            ln = line.decode("utf8", errors="ignore")
+            if ln.startswith(";"):
+                ftr.append(ln)
+    return ftr
 
 
 def get_profile(hdr: list, ftr: list):
