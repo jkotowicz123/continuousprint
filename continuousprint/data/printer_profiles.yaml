@@ -317,7 +317,7 @@ PrinterProfile:
       clearBed: Pause
       finished: Generic Off
     depth: 210
-    extra_tags: ["MK4"]
+    extra_tags: ["MK4","MK4IS"]
     formFactor: rectangular
     height: 220
     make: Prusa
@@ -341,7 +341,7 @@ PrinterProfile:
       clearBed: Pause
       finished: Generic Off
     depth: 190
-    extra_tags: ["MK4_JobOx"]
+    extra_tags: ["MK4_JobOx","MK4IS_JobOx"]
     formFactor: rectangular
     height: 220
     make: Prusa
